@@ -1,9 +1,10 @@
 from pydo.client import Client
 
+
 class Account(Client):
     def __init__(self):
         super().__init__()
-    
+
     def account(self):
         """To show information about the current user account.
         :return: A JSON object keyed on account with an excerpt of the current user account data.
@@ -22,4 +23,4 @@ class Account(Client):
                 }
             }
         """
-        return self.get(path="/account")
+        return self.get(path='/account')
