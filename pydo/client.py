@@ -1,18 +1,20 @@
 import json
 import os
+
 import requests
 
 from pydo.util import format_url
 
 
-class Client(object):
+class Client:
     """
     The base client class for communicating with an API.
     """
+
     def __init__(self, url: str = 'https://api.digitalocean.com/v2', token: str = None):
         self.url = url
         if token is None:
-            self.token = os.getenv("DIGITALOCEAN_TOKEN", None)
+            self.token = os.getenv('DIGITALOCEAN_TOKEN', None)
         else:
             self.token = token
         self.session = requests.Session()
@@ -22,7 +24,7 @@ class Client(object):
         self.session.headers.update({'Accept': 'application/json'})
 
     def __set_auth_header(self) -> None:
-        self.session.headers.update({"Authorization": "Bearer " + self.token})
+        self.session.headers.update({'Authorization': 'Bearer ' + self.token})
 
     def _request(self, method: str, base_url: str, path: str, data: dict = {}, header: dict = {}, params: dict = {}):
         if path is not None and base_url is not None:
@@ -47,19 +49,19 @@ class Client(object):
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
-            raise(e)
+            raise (e)
         except requests.exceptions.RequestException as e:
-            raise(e)
+            raise (e)
         except requests.exceptions.ConnectionError as e:
-            raise(e)
+            raise (e)
         except requests.exceptions.Timeout as e:
-            raise(e)
+            raise (e)
 
         if response.text != '':
             try:
                 _response = response.json()
-                while "next" in response.links.keys():
-                    response = self.session.request(method=method, url=response.links["next"]["url"], data=data, headers=self.session.headers, params=params)
+                while 'next' in response.links.keys():
+                    response = self.session.request(method=method, url=response.links['next']['url'], data=data, headers=self.session.headers, params=params)
                     _response.extend(response.json())
                 return _response
             except json.decoder.JSONDecodeError:
